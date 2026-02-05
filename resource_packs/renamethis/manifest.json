@@ -1,8 +1,8 @@
 {
     "format_version": 2,
     "header": {
-        "name": "Resource pack",
-        "description": "Resource pack description.",
+        "name": "pack.name",
+        "description": "pack.description",
         "uuid": "RESOURCE PACK GUID",
         "version": [
             1,
