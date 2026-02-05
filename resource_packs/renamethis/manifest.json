@@ -1,0 +1,40 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "Resource pack",
+        "description": "Resource pack description.",
+        "uuid": "RESOURCE PACK GUID",
+        "version": [
+            1,
+            0,
+            0
+        ],
+        "min_engine_version": [
+            1,
+            21,
+            130
+        ]
+    },
+    "modules": [
+        {
+            "description": "Resource pack resources",
+            "type": "resources",
+            "uuid": "UNIQUE GUID",
+            "version": [
+                1,
+                0,
+                0
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "uuid": "BEHAVIOR PACK GUID",
+            "version": [
+                1,
+                0,
+                0
+            ]
+        }
+    ]
+}
