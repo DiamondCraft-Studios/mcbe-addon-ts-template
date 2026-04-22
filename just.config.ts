@@ -21,8 +21,20 @@ import AdmZip from "adm-zip";
 
 // Setup env variables
 setupEnvironment(path.resolve(__dirname, ".env"));
-const projectName = getOrThrowFromProcess("PROJECT_NAME");
-const mcworldName = getOrThrowFromProcess("MCWORLD_NAME");
+
+const PROJECT_NAME = getOrThrowFromProcess("PROJECT_NAME");
+const BP_PACK_NAME = getOrThrowFromProcess("BP_PACK_NAME");
+const RP_PACK_NAME = getOrThrowFromProcess("RP_PACK_NAME");
+const MCWORLD_NAME = getOrThrowFromProcess("MCWORLD_NAME");
+const ADD_ON_VERSION = getOrThrowFromProcess("ADD_ON_VERSION");
+const WORLD_DEPLOYMENT_PATH = getOrThrowFromProcess("WORLD_DEPLOYMENT_PATH");
+const SERVER_WORLD_DEPLOYMENT_PATH = getOrThrowFromProcess("SERVER_WORLD_DEPLOYMENT_PATH");
+const SERVER_WORLD_NAME = getOrThrowFromProcess("SERVER_WORLD_NAME");
+const WORLD_TEMPLATE_PATH = getOrThrowFromProcess("WORLD_TEMPLATE_PATH");
+const TEST_WORLD_PATH = getOrThrowFromProcess("TEST_WORLD_PATH");
+const DIST_PATH = "./dist";
+
+const DEPLOYED_WORLD_NAME = "deployed_world";
 
 const bundleTaskOptions: BundleTaskParameters = {
     entryPoint: path.join(__dirname, "./scripts/main.ts"),
@@ -34,19 +46,24 @@ const bundleTaskOptions: BundleTaskParameters = {
 };
 
 const copyTaskOptions: CopyTaskParameters = {
-    copyToBehaviorPacks: [`./behavior_packs/${projectName}`],
+    copyToBehaviorPacks: [`./behavior_packs/${PROJECT_NAME}`],
     copyToScripts: ["./dist/scripts"],
-    copyToResourcePacks: [`./resource_packs/${projectName}`],
+    copyToResourcePacks: [`./resource_packs/${PROJECT_NAME}`],
 };
 
 const mcaddonTaskOptions: ZipTaskParameters = {
     ...copyTaskOptions,
-    outputFile: `./dist/packages/${projectName}.mcaddon`,
+    outputFile: `./dist/packages/${MCWORLD_NAME}.mcaddon`,
 };
 
-const mcworldTaskOptions: ZipTaskParameters = {
-    ...copyTaskOptions,
-    outputFile: `./dist/packages/${projectName}.mcworld`,
+export type McworldTaskParameters = ZipTaskParameters & {
+    isTestWorld: boolean;
+};
+
+export type LocalDeployWorldParameters = {
+    worldName: string;
+    isTestWorld: boolean;
+    server: boolean;
 };
 
 // Lint
@@ -75,82 +92,166 @@ task(
     )
 );
 
-// Mcaddon
+// Creates .mcaddon file
 task("createMcaddonFile", mcaddonTask(mcaddonTaskOptions));
 task("mcaddon", series("clean-local", "build", "createMcaddonFile"));
 
-// Mcworld
+const mcworldTaskOptions: McworldTaskParameters = {
+    ...copyTaskOptions,
+    outputFile: `./dist/packages/${MCWORLD_NAME} ${ADD_ON_VERSION}.mcworld`,
+    isTestWorld: false,
+};
+
+const mcworldTestTaskOptions: McworldTaskParameters = {
+    ...copyTaskOptions,
+    outputFile: `./dist/packages/${MCWORLD_NAME}-test ${ADD_ON_VERSION}.mcworld`,
+    isTestWorld: true,
+};
+
+// Creates .mcworld file
 task("createMcworldFile", mcworldTask(mcworldTaskOptions));
 task("mcworld", series("clean-local", "build", "createMcworldFile"));
 
-// deploy world to local minecraft
-// task("dpw", localDeployWorld());
+// Creates an mcworld based from a testing world
+task("createMcworldFile", mcworldTask(mcworldTestTaskOptions));
+task("mcworld-test", series("clean-local", "build", "createMcworldFile"));
 
-function mcworldTask(options: ZipTaskParameters) {
+// Deploys target world to local minecraft worlds directory
+task(
+    "ldp-world",
+    localDeployWorldTask({
+        worldName: DEPLOYED_WORLD_NAME,
+        isTestWorld: false,
+        server: false,
+    })
+);
+
+// Deploys target world to local minecraft worlds directory
+task(
+    "ldp-world-test",
+    localDeployWorldTask({
+        worldName: DEPLOYED_WORLD_NAME,
+        isTestWorld: true,
+        server: false,
+    })
+);
+
+task(
+    "ldp-world-server",
+    localDeployWorldTask({
+        worldName: DEPLOYED_WORLD_NAME,
+        isTestWorld: false,
+        server: true,
+    })
+);
+
+task(
+    "ldp-world-test-server",
+    localDeployWorldTask({
+        worldName: DEPLOYED_WORLD_NAME,
+        isTestWorld: true,
+        server: true,
+    })
+);
+
+task("clean-all", cleanAllTask());
+
+function mcworldTask(options: McworldTaskParameters) {
     return async (context: any) => {
-        const distDir = "./dist";
-        const worldDir = "./world"; // world folder template
+        // World template folder
+        const distDir = DIST_PATH;
+        const worldDir = options.isTestWorld ? TEST_WORLD_PATH : WORLD_TEMPLATE_PATH;
+
         if (!fs.existsSync(worldDir)) {
-            console.error("World template not found. Please create a folder named 'world' in the root of the project.");
+            console.error(`World template not found. Please create a directory '${worldDir}' in the project.`);
+        }
+        if (fs.readdirSync(worldDir).length === 0) {
+            console.warn(`World template directory '${worldDir}' is empty!`);
         }
 
-        const worldPath = path.join(distDir, "packages");
-        const bpPath = path.join(worldPath, "behavior_packs", projectName);
-        const rpPath = path.join(worldPath, "resource_packs", projectName);
+        const worldTemplatePath = path.join(distDir, "packages/world_template");
+        const bpPath = path.join(worldTemplatePath, "behavior_packs", PROJECT_NAME);
+        const rpPath = path.join(worldTemplatePath, "resource_packs", PROJECT_NAME);
 
         // Copy world template
-        copyRecursiveSync(worldDir, worldPath);
-        console.log(`Copied world template: ${worldPath}`);
+        console.log(`... Copying world template from '${worldDir}' to '${worldTemplatePath}'`);
+        copyRecursiveSync(worldDir, worldTemplatePath);
+        console.log(`Done copying world template`);
 
         // Copy packs into dist
+        console.log(`... Copying scripts`);
         const scriptSource = path.join(distDir, "scripts", "main.js");
-        const scriptDest = path.join(`./behavior_packs/${projectName}/scripts/main.js`);
+        const scriptDest = path.join(`./behavior_packs/${PROJECT_NAME}/scripts/main.js`);
         copyRecursiveSync(scriptSource, scriptDest);
-        console.log(`Copied scripts`);
+        console.log(`Done copying scripts`);
 
-        copyRecursiveSync(`./behavior_packs/${projectName}`, bpPath);
+        console.log(`... Copying behavior packs`);
+        copyRecursiveSync(`./behavior_packs/${PROJECT_NAME}`, bpPath);
         console.log(`Copied behavior packs`);
 
-        // const scriptSource = path.join(distDir, "scripts", "main.js")
-        // copyRecursiveSync(scriptSource, path.join(worldPath, `behavior_packs/${projectName}/scripts/`));
-        // console.log(`Copied scripts`);
-
-        copyRecursiveSync(`./resource_packs/${projectName}`, rpPath);
+        console.log(`... Copying resource packs`);
+        copyRecursiveSync(`./resource_packs/${PROJECT_NAME}`, rpPath);
         console.log(`Copied resource packs`);
 
-        // pack UUID linking to world
-        // fs.writeFileSync(
-        //     path.join(worldBuild, "world_behavior_packs.json"),
-        //     JSON.stringify([{ pack_id: "<BP_UUID>", version: [1, 0, 0] }], null, 2)
-        // );
-        // fs.writeFileSync(
-        //     path.join(worldBuild, "world_resource_packs.json"),
-        //     JSON.stringify([{ pack_id: "<RP_UUID>", version: [1, 0, 0] }], null, 2)
-        // );
-
-        const outputFile = path.resolve(`./dist/packages/${mcworldName}.mcworld`);
-        fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+        const outputMcwFile = path.resolve(options.outputFile);
+        fs.mkdirSync(path.dirname(outputMcwFile), { recursive: true });
 
         const zip = new AdmZip();
-        zip.addLocalFolder(worldPath);
-        zip.writeZip(outputFile);
+        zip.addLocalFolder(worldTemplatePath);
+        zip.writeZip(outputMcwFile);
 
-        console.log(`Created .mcworld ${outputFile}`);
+        console.log(`Created .mcworld ${outputMcwFile}`);
+
         return Promise.resolve();
     };
 }
 
-function localDeployWorld() {
+/**
+ * Deploys a target world to the Minecraft worlds directory.
+ */
+function localDeployWorldTask(options: LocalDeployWorldParameters) {
     return async (context: any) => {
-        const fromWorld = path.resolve(__dirname, "./world");
-        if (!fs.existsSync(fromWorld)) {
+        const worldDir = path.resolve(__dirname, options.isTestWorld ? TEST_WORLD_PATH : WORLD_TEMPLATE_PATH);
+
+        if (!fs.existsSync(worldDir)) {
             console.error("World folder not found");
         }
-        const toWorld = path.resolve(
-            `C:/Users/Owner/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds/${projectName}`
+        if (!fs.existsSync(worldDir)) {
+            console.error(`World template not found. Please create a directory '${worldDir}' in the project.`);
+        }
+        if (fs.readdirSync(worldDir).length === 0) {
+            console.warn(`World template directory '${worldDir}' is empty!`);
+        }
+
+        const destPath = path.resolve(
+            options.server ? SERVER_WORLD_DEPLOYMENT_PATH : WORLD_DEPLOYMENT_PATH,
+            options.server ? SERVER_WORLD_NAME : options.worldName
         );
 
-        copyRecursiveSync(fromWorld, toWorld);
+        if (fs.existsSync(destPath)) {
+            console.error(`Found existing world at '${destPath}'`);
+            fs.rmSync(destPath, { recursive: true, force: true });
+        }
+
+        console.log(`... Deploying world to '${destPath}'`);
+        copyRecursiveSync(worldDir, destPath);
+        console.log(`Deployed world to '${destPath}'`);
+
+        return Promise.resolve();
+    };
+}
+
+function cleanAllTask() {
+    return async (context: any) => {
+        const deployedWorldPath = path.resolve(WORLD_DEPLOYMENT_PATH, DEPLOYED_WORLD_NAME);
+
+        if (fs.existsSync(deployedWorldPath)) {
+            console.error(`Found deployed world at '${deployedWorldPath}', removing...`);
+            fs.rmSync(deployedWorldPath, { recursive: true, force: true });
+            console.error(`Removed deployed world at '${deployedWorldPath}'`);
+        }
+
+        console.log(`Finished clean all`);
         return Promise.resolve();
     };
 }
