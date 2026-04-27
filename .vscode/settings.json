@@ -27,9 +27,7 @@
 		"**/lib": true,
 		"**/assets/**": true,
 		"**/.backups/**": true,
-		"**/.build/**": true,
-		"**/world/**": true,
-		"**/world-test/**": true
+		"**/.build/**": true
 	},
 	"files.exclude": {
 		"**/.git": true,
