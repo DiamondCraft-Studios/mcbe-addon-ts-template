@@ -1,0 +1,47 @@
+{
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.tabSize": 4
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.tabSize": 4
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.tabSize": 4
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.tabSize": 2
+	},
+	"editor.formatOnSave": false,
+	"editor.tabSize": 2,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"git.ignoreLimitWarning": true,
+	"search.exclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/dist": true,
+		"**/lib": true,
+		"**/assets/**": true,
+		"**/.backups/**": true,
+		"**/.build/**": true,
+		"**/world/**": true,
+		"**/world-test/**": true
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/.DS_Store": true
+	},
+	"python-envs.pythonProjects": [
+		{
+			"path": "scripts",
+			"envManager": "ms-python.python:venv",
+			"packageManager": "ms-python.python:pip"
+		}
+	],
+	"omnisharp.useEditorFormattingSettings": false,
+}
