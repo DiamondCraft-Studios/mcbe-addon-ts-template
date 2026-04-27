@@ -1,0 +1,18 @@
+# build outputs
+dist
+build
+
+# dependencies
+node_modules
+
+# logs
+*.log
+
+# generated files
+*.generated.ts
+
+.backups/
+assets/
+assets/worlds/**/db/
+world/db/
+world-test/db
