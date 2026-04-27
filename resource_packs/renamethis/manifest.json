@@ -1,40 +1,24 @@
 {
-    "format_version": 2,
-    "header": {
-        "name": "pack.name",
-        "description": "pack.description",
-        "uuid": "RESOURCE PACK GUID",
-        "version": [
-            1,
-            0,
-            0
-        ],
-        "min_engine_version": [
-            1,
-            21,
-            130
-        ]
-    },
-    "modules": [
-        {
-            "description": "Resource pack resources",
-            "type": "resources",
-            "uuid": "UNIQUE GUID",
-            "version": [
-                1,
-                0,
-                0
-            ]
-        }
-    ],
-    "dependencies": [
-        {
-            "uuid": "BEHAVIOR PACK GUID",
-            "version": [
-                1,
-                0,
-                0
-            ]
-        }
-    ]
+	"format_version": 2,
+	"header": {
+		"name": "pack.name",
+		"description": "pack.description",
+		"uuid": "RESOURCE PACK GUID",
+		"version": [1, 0, 0],
+		"min_engine_version": [1, 26, 10]
+	},
+	"modules": [
+		{
+			"description": "Resource pack resources",
+			"type": "resources",
+			"uuid": "UNIQUE GUID",
+			"version": [1, 0, 0]
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "BEHAVIOR PACK GUID",
+			"version": [1, 0, 0]
+		}
+	]
 }

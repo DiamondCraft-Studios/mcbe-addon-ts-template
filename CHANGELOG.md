@@ -1,6 +1,5 @@
 ## 1.0.0 (2026-04-25)
 
-
 ## 📦 Uncategorized
 
 - Add .env template
