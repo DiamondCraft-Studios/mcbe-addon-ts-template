@@ -2,8 +2,7 @@ module.exports = {
 	parserOpts: {
 		headerPattern: /^(\w+)(?:\(([^)]+)\))?:\s(.+)$/,
 		headerCorrespondence: ["type", "scope", "subject"],
-		headerPartial: `# {{version}}\n`,
-		footerPartial: `\n\n**Full Changelog:** https://github.com/OWNER/REPO/compare/{{previousTag}}...{{currentTag}}`,
+		headerPartial: `# v{{version}}\n`,
 	},
 
 	writerOpts: {
@@ -46,8 +45,6 @@ module.exports = {
 {{/each}}
 
 {{/each}}
-
-{{> footer}}
 `,
 	},
 };
