@@ -44,6 +44,8 @@ export function createIdGenerator(options: GeneratorOptions) {
 		const output = `export const ${options.exportName} = {
 ${allEntries.join("\n")}
 } as const;
+
+export const ${options.exportName}Set = new Set(Object.values(${options.exportName}));
 `;
 
 		fs.mkdirSync(path.dirname(options.outputPath), { recursive: true });
