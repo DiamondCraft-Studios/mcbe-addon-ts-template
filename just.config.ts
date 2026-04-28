@@ -20,6 +20,7 @@ import fs from "fs";
 import AdmZip from "adm-zip";
 import { generateBlockIds } from "./.scripts/codegen/blocks";
 import { generateEntityIds } from "./.scripts/codegen/entities";
+import { generateEntityEventIds } from "./.scripts/codegen/entity-event-id-generator";
 import { generateItemIds } from "./.scripts/codegen/items";
 import { generateSoundIds } from "./.scripts/codegen/sounds";
 
@@ -265,6 +266,7 @@ function codegenIdsTask() {
 	return async (context: any) => {
 		await generateBlockIds();
 		await generateEntityIds();
+		await generateEntityEventIds();
 		await generateItemIds();
 		await generateSoundIds();
 	};
