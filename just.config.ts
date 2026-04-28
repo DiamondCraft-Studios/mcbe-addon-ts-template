@@ -18,6 +18,10 @@ import {
 import path from "path";
 import fs from "fs";
 import AdmZip from "adm-zip";
+import { generateBlockIds } from "./.scripts/codegen/blocks";
+import { generateEntityIds } from "./.scripts/codegen/entities";
+import { generateItemIds } from "./.scripts/codegen/items";
+import { generateSoundIds } from "./.scripts/codegen/sounds";
 
 // Setup env variables
 setupEnvironment(path.resolve(__dirname, ".env"));
@@ -155,6 +159,7 @@ task(
 );
 
 task("clean-all", cleanAllTask());
+task("codegen-ids", codegenIdsTask());
 
 function mcworldTask(options: McworldTaskParameters) {
 	return async (context: any) => {
@@ -253,6 +258,15 @@ function cleanAllTask() {
 
 		console.log(`Finished clean all`);
 		return Promise.resolve();
+	};
+}
+
+function codegenIdsTask() {
+	return async (context: any) => {
+		await generateBlockIds();
+		await generateEntityIds();
+		await generateItemIds();
+		await generateSoundIds();
 	};
 }
 
