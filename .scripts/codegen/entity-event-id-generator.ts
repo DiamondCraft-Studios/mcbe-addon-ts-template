@@ -29,7 +29,7 @@ export async function generateEntityEventIds() {
 		}
 	}
 
-	const output = `export const EntityEvents = ${JSON.stringify(tree, null, 4)} as const;
+	const output = `export const AddonEntityEvents = ${JSON.stringify(tree, null, 4)} as const;
 `;
 
 	fs.mkdirSync("scripts/generated/definitions", { recursive: true });
