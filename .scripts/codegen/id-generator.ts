@@ -15,7 +15,6 @@ type GeneratorOptions = {
 
 export function createIdGenerator(options: GeneratorOptions) {
 	return async () => {
-
 		const matches = fg.sync(options.glob);
 
 		if (matches.length === 0) {
@@ -34,8 +33,7 @@ export function createIdGenerator(options: GeneratorOptions) {
 
 					allEntries.push(`\t${varName}: "${key}",`);
 				}
-			}
-			catch (e) {
+			} catch (e) {
 				console.error(`Error parsing ${file}`);
 				console.error(e);
 			}

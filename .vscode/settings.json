@@ -41,5 +41,5 @@
 			"packageManager": "ms-python.python:pip"
 		}
 	],
-	"omnisharp.useEditorFormattingSettings": false,
+	"omnisharp.useEditorFormattingSettings": false
 }
