@@ -1,8 +1,9 @@
 {
 	"compilerOptions": {
-		"target": "es6",
-		"moduleResolution": "Node",
-		"module": "ES2020",
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"lib": ["ES2020"],
 		"declaration": false,
 		"noLib": false,
 		"emitDecoratorMetadata": true,
