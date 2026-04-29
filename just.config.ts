@@ -21,6 +21,7 @@ import AdmZip from "adm-zip";
 import { generateBlockIds } from "./.scripts/codegen/blocks";
 import { generateEntityIds } from "./.scripts/codegen/entities";
 import { generateEntityEventIds } from "./.scripts/codegen/entity-event-id-generator";
+import { generateEntityPropertyIds } from "./.scripts/codegen/entity-property-id-generator";
 import { generateItemIds } from "./.scripts/codegen/items";
 import { generateSoundIds } from "./.scripts/codegen/sounds";
 
@@ -267,6 +268,7 @@ function codegenIdsTask() {
 		await generateBlockIds();
 		await generateEntityIds();
 		await generateEntityEventIds();
+		await generateEntityPropertyIds();
 		await generateItemIds();
 		await generateSoundIds();
 	};
