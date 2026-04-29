@@ -1,7 +1,8 @@
 {
 	"recommendations": [
-		"esbenp.prettier-vscode",
+		"amatiasq.sort-imports",
 		"blockceptionltd.blockceptionvscodeminecraftbedrockdevelopmentextension",
+		"esbenp.prettier-vscode",
 		"mojang-studios.minecraft-debugger"
 	]
 }
