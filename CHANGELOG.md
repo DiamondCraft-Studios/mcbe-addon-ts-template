@@ -1,3 +1,26 @@
+## 1.4.0 (2026-04-29)
+
+## 📦 Uncategorized
+
+- Add codegen for entity event id references
+- Add generated Set for export
+- Add string generic to Set in generator
+- Prettier run
+- Set default exportName prefixed with 'Addon' for asset types
+- Update extensions.json
+- Update tsconfig target module
+
+## 1.3.0 (2026-04-28)
+
+## 📦 Uncategorized
+
+- Add codegen for asset id references
+- Create .prettierignore
+- Update changelog config
+- Update CHANGELOG.md
+- Update vscode setting to include world template folder in searches
+- Update vscode setting to include world template folder in searches
+
 ## 1.2.0 (2026-04-27)
 
 ## 📦 Uncategorized
