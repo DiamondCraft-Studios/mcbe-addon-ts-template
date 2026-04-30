@@ -1,5 +1,9 @@
-import { createIdGenerator } from "./id-generator";
+import { createIdGenerator } from "./abstract-id-generator";
 
+/**
+ * Code generation script.
+ * Reads all behavior pack Items and generates an id map for ease of reference in scripting.
+ */
 export const generateItemIds = createIdGenerator({
 	glob: "behavior_packs/*/items/*.json",
 	outputPath: "scripts/generated/definitions/items.ts",

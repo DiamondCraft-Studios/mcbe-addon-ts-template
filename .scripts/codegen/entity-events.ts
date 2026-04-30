@@ -2,6 +2,10 @@ import fs from "fs";
 import fg from "fast-glob";
 import { parse } from "jsonc-parser";
 
+/**
+ * Code generation script.
+ * Reads all behavior pack entity events and generates an id map for ease of reference in scripting.
+ */
 export async function generateEntityEventIds() {
 	const matches = fg.sync("behavior_packs/*/entities/*.json");
 	const outputPath = "scripts/generated/definitions/entity-events.ts";

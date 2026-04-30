@@ -3,6 +3,10 @@ import path from "path";
 import { parse } from "jsonc-parser";
 import fg from "fast-glob";
 
+/**
+ * Code generation script.
+ * Reads all behavior pack block states and generates an id map for ease of reference in scripting.
+ */
 export async function generateBlockStateIds() {
 	const matches = fg.sync("behavior_packs/*/blocks/*.json");
 

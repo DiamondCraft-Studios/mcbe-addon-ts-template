@@ -19,10 +19,10 @@ import path from "path";
 import fs from "fs";
 import AdmZip from "adm-zip";
 import { generateBlockIds } from "./.scripts/codegen/blocks";
-import { generateBlockStateIds } from "./.scripts/codegen/block-state-id-generator";
+import { generateBlockStateIds } from "./.scripts/codegen/block-states";
 import { generateEntityIds } from "./.scripts/codegen/entities";
-import { generateEntityEventIds } from "./.scripts/codegen/entity-event-id-generator";
-import { generateEntityPropertyIds } from "./.scripts/codegen/entity-property-id-generator";
+import { generateEntityEventIds } from "./.scripts/codegen/entity-events";
+import { generateEntityPropertyIds } from "./.scripts/codegen/entity-properties";
 import { generateItemIds } from "./.scripts/codegen/items";
 import { generateSoundIds } from "./.scripts/codegen/sounds";
 

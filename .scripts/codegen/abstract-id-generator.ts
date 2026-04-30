@@ -13,6 +13,11 @@ type GeneratorOptions = {
 	typeName?: string;
 };
 
+/**
+ * Code generator with options to generate simple entity id to property maps.
+ * @param options 
+ * @returns 
+ */
 export function createIdGenerator(options: GeneratorOptions) {
 	return async () => {
 		const matches = fg.sync(options.glob);
