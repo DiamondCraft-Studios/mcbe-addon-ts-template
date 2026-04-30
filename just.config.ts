@@ -24,6 +24,7 @@ import { generateEntityIds } from "./.scripts/codegen/entities";
 import { generateEntityEventIds } from "./.scripts/codegen/entity-events";
 import { generateEntityPropertyIds } from "./.scripts/codegen/entity-properties";
 import { generateItemIds } from "./.scripts/codegen/items";
+import { generateParticleIds } from "./.scripts/codegen/particles";
 import { generateSoundIds } from "./.scripts/codegen/sounds";
 
 // Setup env variables
@@ -272,6 +273,7 @@ function codegenIdsTask() {
 		await generateEntityEventIds();
 		await generateEntityPropertyIds();
 		await generateItemIds();
+		await generateParticleIds();
 		await generateSoundIds();
 	};
 }
