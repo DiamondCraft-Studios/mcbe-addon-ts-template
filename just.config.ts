@@ -19,6 +19,7 @@ import path from "path";
 import fs from "fs";
 import AdmZip from "adm-zip";
 import { generateBlockIds } from "./.scripts/codegen/blocks";
+import { generateBlockStateIds } from "./.scripts/codegen/block-state-id-generator";
 import { generateEntityIds } from "./.scripts/codegen/entities";
 import { generateEntityEventIds } from "./.scripts/codegen/entity-event-id-generator";
 import { generateEntityPropertyIds } from "./.scripts/codegen/entity-property-id-generator";
@@ -266,6 +267,7 @@ function cleanAllTask() {
 function codegenIdsTask() {
 	return async (context: any) => {
 		await generateBlockIds();
+		await generateBlockStateIds();
 		await generateEntityIds();
 		await generateEntityEventIds();
 		await generateEntityPropertyIds();
