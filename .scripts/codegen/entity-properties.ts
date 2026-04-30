@@ -1,6 +1,7 @@
 import fs from "fs";
 import fg from "fast-glob";
 import { parse } from "jsonc-parser";
+import { createHeader } from "./utils";
 
 /**
  * Code generation script.
@@ -33,7 +34,9 @@ export async function generateEntityPropertyIds() {
 		}
 	}
 
-	const output = `export const AddonEntityProperties = ${JSON.stringify(tree, null, 4)} as const;
+	const output = `${createHeader(".scripts/codegen/entity-properties.ts")}
+
+export const AddonEntityProperties = ${JSON.stringify(tree, null, 4)} as const;
 `;
 
 	fs.mkdirSync("scripts/generated/definitions", { recursive: true });

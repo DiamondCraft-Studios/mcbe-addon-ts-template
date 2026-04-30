@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { parse } from "jsonc-parser";
 import fg from "fast-glob";
+import { createHeader } from "./utils";
 
 /**
  * Code generation script.
@@ -53,7 +54,9 @@ export async function generateBlockStateIds() {
 		})
 		.join("\n");
 
-	const output = `import { BlockStateSuperset } from "@minecraft/vanilla-data";
+	const output = `${createHeader(".scripts/codegen/block-states.ts")}
+
+import { BlockStateSuperset } from "@minecraft/vanilla-data";
 
 export type AddonBlockStateSuperset = BlockStateSuperset & {
 ${supersetFields}

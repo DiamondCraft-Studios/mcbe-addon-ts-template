@@ -2,7 +2,7 @@ import fs from "fs";
 import fg from "fast-glob";
 import path from "path";
 import { parse } from "jsonc-parser";
-import { toPascalCase } from "./utils";
+import { createHeader, toPascalCase } from "./utils";
 
 type GeneratorOptions = {
 	glob: string;
@@ -44,7 +44,9 @@ export function createIdGenerator(options: GeneratorOptions) {
 			}
 		}
 
-		const output = `export const ${options.exportName} = {
+		const output = `${createHeader(".scripts/codegen/abstract-id-generator.ts")}
+
+export const ${options.exportName} = {
 ${allEntries.join("\n")}
 } as const;
 
