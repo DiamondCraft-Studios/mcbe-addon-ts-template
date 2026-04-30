@@ -5,7 +5,7 @@ import { createIdGenerator } from "./abstract-id-generator";
  * Reads all behavior pack blocks and generates an id map for ease of reference in scripting.
  */
 export const generateBlockIds = createIdGenerator({
-	glob: "behavior_packs/*/blocks/*.json",
+	glob: "behavior_packs/*/blocks/**/*.json",
 	outputPath: "scripts/generated/definitions/blocks.ts",
 	exportName: "AddonBlockTypes",
 	inputSelector: (json) => {

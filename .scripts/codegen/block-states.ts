@@ -9,7 +9,7 @@ import { createHeader } from "./utils";
  * Reads all behavior pack block states and generates an id map for ease of reference in scripting.
  */
 export async function generateBlockStateIds() {
-	const matches = fg.sync("behavior_packs/*/blocks/*.json");
+	const matches = fg.sync("behavior_packs/*/blocks/**/*.json");
 
 	const globalStates = new Set<string>();
 	const blockMap: Record<string, Record<string, string>> = {};

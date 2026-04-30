@@ -5,7 +5,7 @@ import { createIdGenerator } from "./abstract-id-generator";
  * Reads all behavior pack entities and generates an id map for ease of reference in scripting.
  */
 export const generateEntityIds = createIdGenerator({
-	glob: "behavior_packs/*/entities/*.json",
+	glob: "behavior_packs/*/entities/**/*.json",
 	outputPath: "scripts/generated/definitions/entities.ts",
 	exportName: "AddonEntityTypes",
 	inputSelector: (json) => {

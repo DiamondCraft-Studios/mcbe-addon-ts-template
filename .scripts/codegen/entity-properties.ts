@@ -8,7 +8,7 @@ import { createHeader } from "./utils";
  * Reads all behavior pack entity properties and generates an id map for ease of reference in scripting.
  */
 export async function generateEntityPropertyIds() {
-	const matches = fg.sync("behavior_packs/*/entities/*.json");
+	const matches = fg.sync("behavior_packs/*/entities/**/*.json");
 	const outputPath = "scripts/generated/definitions/entity-properties.ts";
 
 	const tree: Record<string, any> = {};
