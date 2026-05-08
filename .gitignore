@@ -4,9 +4,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 .env
-world/behavior_packs
-world/resource_packs
-world/*.mcworld
 
 # build output
 **/dist/**
