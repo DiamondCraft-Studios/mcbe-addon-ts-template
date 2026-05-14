@@ -268,14 +268,38 @@ function localDeployWorldTask(options: LocalDeployWorldParameters) {
 
 function codegenIdsTask() {
 	return async (context: any) => {
-		await generateBlockIds();
-		await generateBlockStateIds();
-		await generateEntityIds();
-		await generateEntityEventIds();
-		await generateEntityPropertyIds();
-		await generateItemIds();
-		await generateParticleIds();
-		await generateSoundIds();
+		const args = process.argv;
+		const arg = args[3]?.replace(/^--/, "");
+
+		const generators = {
+			"block-ids": generateBlockIds,
+			"block-states": generateBlockStateIds,
+			"entity-ids": generateEntityIds,
+			"entity-events": generateEntityEventIds,
+			"entity-properties": generateEntityPropertyIds,
+			"item-ids": generateItemIds,
+			"particle-ids": generateParticleIds,
+			"sound-ids": generateSoundIds,
+		};
+
+		if (!arg) {
+			await generators["block-ids"]();
+			await generators["block-states"]();
+			await generators["entity-ids"]();
+			await generators["entity-events"]();
+			await generators["entity-properties"]();
+			await generators["item-ids"]();
+			await generators["particle-ids"]();
+			await generators["sound-ids"]();
+		} else {
+			const generator = generators[arg as keyof typeof generators];
+
+			if (!generator) {
+				throw new Error(`Unknown generator: ${arg}`);
+			}
+
+			await generator();
+		}
 	};
 }
 
