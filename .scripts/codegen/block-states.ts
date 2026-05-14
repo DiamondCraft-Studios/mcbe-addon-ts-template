@@ -12,7 +12,9 @@ export async function generateBlockStateIds() {
 	const matches = fg.sync("behavior_packs/*/blocks/**/*.json");
 
 	const globalStates = new Set<string>();
+	const sharedStates = new Set<string>();
 	const blockMap: Record<string, Record<string, string>> = {};
+	const sharedStateMap: Record<string, string> = {};
 
 	for (const file of matches) {
 		const json = parse(fs.readFileSync(file, "utf-8"));
@@ -32,16 +34,24 @@ export async function generateBlockStateIds() {
 		for (const stateId of Object.keys(states)) {
 			if (!stateId || stateId.trim() === "") continue;
 
-			globalStates.add(stateId);
-
 			const stateName = extractStateName(stateId);
 
+			if (globalStates.has(stateId)) {
+				sharedStates.add(stateId);
+				sharedStateMap[stateName] = stateId;
+			}
+
+			globalStates.add(stateId);
 			blockMap[blockName][stateName] = stateId;
 		}
 	}
 
 	const supersetFields = Array.from(globalStates)
 		.map((s) => `\t['${s}']?: number;`)
+		.join("\n");
+
+	const sharedFields = Object.entries(sharedStateMap)
+		.map(([stateName, stateId]) => `\t${stateName}: "${stateId}",`)
 		.join("\n");
 
 	const blockEntries = Object.entries(blockMap)
@@ -63,6 +73,9 @@ ${supersetFields}
 };
 
 export const AddonBlockStates = {
+	// Shared states
+${sharedFields}
+
 ${blockEntries}
 } as const;
 `;
