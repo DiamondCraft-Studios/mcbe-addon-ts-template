@@ -272,25 +272,25 @@ function codegenIdsTask() {
 		const arg = args[3]?.replace(/^--/, "");
 
 		const generators = {
-			"block-ids": generateBlockIds,
-			"block-states": generateBlockStateIds,
-			"entity-ids": generateEntityIds,
-			"entity-events": generateEntityEventIds,
-			"entity-properties": generateEntityPropertyIds,
-			"item-ids": generateItemIds,
-			"particle-ids": generateParticleIds,
-			"sound-ids": generateSoundIds,
+			["blocks"]: generateBlockIds,
+			["block-states"]: generateBlockStateIds,
+			["entities"]: generateEntityIds,
+			["entity-events"]: generateEntityEventIds,
+			["entity-properties"]: generateEntityPropertyIds,
+			["items"]: generateItemIds,
+			["particles"]: generateParticleIds,
+			["sounds"]: generateSoundIds,
 		};
 
 		if (!arg) {
-			await generators["block-ids"]();
+			await generators["blocks"]();
 			await generators["block-states"]();
-			await generators["entity-ids"]();
+			await generators["entities"]();
 			await generators["entity-events"]();
 			await generators["entity-properties"]();
-			await generators["item-ids"]();
-			await generators["particle-ids"]();
-			await generators["sound-ids"]();
+			await generators["items"]();
+			await generators["particles"]();
+			await generators["sounds"]();
 		} else {
 			const generator = generators[arg as keyof typeof generators];
 
