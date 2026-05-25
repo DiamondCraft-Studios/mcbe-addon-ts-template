@@ -36,8 +36,8 @@ if (process.env.CI) {
 }
 
 const PROJECT_NAME = getOrThrowFromProcess("PROJECT_NAME");
-const BP_PACK_NAME = PROJECT_NAME + "_bp";
-const RP_PACK_NAME = PROJECT_NAME + "_rp";
+const BP_PACK_NAME = "bp0";
+const RP_PACK_NAME = "rp0";
 const MCWORLD_NAME = getOrThrowFromProcess("MCWORLD_NAME");
 
 const DEPLOYED_WORLD_NAME = "deployed_world";
@@ -114,6 +114,11 @@ const mcworldTestTaskOptions: McworldTaskParameters = {
 	isTestWorld: true,
 };
 
+const marketplaceBundleTaskOptions: ZipTaskParameters = {
+	...copyTaskOptions,
+	outputFile: `./dist/bundles/${process.env.PROJECT_NAME}.zip`,
+};
+
 // Creates .mcworld file
 task("createMcworldFile", mcworldTask(mcworldTaskOptions));
 task("mcworld", series("clean-local", "build", "createMcworldFile"));
@@ -121,6 +126,10 @@ task("mcworld", series("clean-local", "build", "createMcworldFile"));
 // Creates an mcworld based from a testing world
 task("createMcworldFile", mcworldTask(mcworldTestTaskOptions));
 task("mcworld-test", series("clean-local", "build", "createMcworldFile"));
+
+// Creates a marketplace bundle zip file
+task("marketplaceBundle", mpBundleTask(marketplaceBundleTaskOptions));
+task("mpBundle", series("clean-local", "build", "marketplaceBundle"));
 
 // Deploys target world to local minecraft worlds directory
 task(
@@ -261,6 +270,110 @@ function localDeployWorldTask(options: LocalDeployWorldParameters) {
 		console.log(`... Deploying world to '${destPath}'`);
 		copyRecursiveSync(worldDir, destPath);
 		console.log(`Deployed world to '${destPath}'`);
+
+		return Promise.resolve();
+	};
+}
+
+/**
+ * Creates a marketplace bundle zip file with the expected structure and content for submission to the Minecraft marketplace.
+ */
+function mpBundleTask(options: ZipTaskParameters) {
+	return async (context: any) => {
+		const WORLD_TEMPLATE_SRC_DIR = getOrThrowFromProcess("WORLD_TEMPLATE_SRC_DIR");
+
+		// World template folder
+		const worldTemplateSrcDir = WORLD_TEMPLATE_SRC_DIR;
+
+		if (!fs.existsSync(worldTemplateSrcDir)) {
+			console.error(
+				`World template not found. Please create a directory '${worldTemplateSrcDir}' in the project.`
+			);
+		}
+		if (fs.readdirSync(worldTemplateSrcDir).length === 0) {
+			console.warn(`World template directory '${worldTemplateSrcDir}' is empty!`);
+		}
+
+		const worldTemplateOutDir = path.resolve(process.cwd(), "dist", "packages", "world_template");
+
+		// Copy world template
+		console.log(`... Copying world_template: '${worldTemplateSrcDir}' -> '${worldTemplateOutDir}'`);
+
+		copyRecursiveSync(worldTemplateSrcDir, worldTemplateOutDir);
+
+		console.log(`✅ Done copying world template`);
+
+		// Copy behavior packs
+		const bpSrcDir = path.resolve(process.cwd(), "behavior_packs", BP_PACK_NAME);
+		const bpOutDir = path.join(worldTemplateOutDir, "behavior_packs", BP_PACK_NAME);
+
+		const rpSrcDir = path.resolve(process.cwd(), "resource_packs", RP_PACK_NAME);
+		const rpOutDir = path.join(worldTemplateOutDir, "resource_packs", RP_PACK_NAME);
+
+		console.log(`... Copying behavior packs: '${bpSrcDir}' -> '${bpOutDir}'`);
+
+		copyRecursiveSync(bpSrcDir, bpOutDir);
+
+		console.log(`✅ Done copying behavior packs`);
+
+		// Copy resource packs
+		console.log(`... Copying resource packs: '${rpSrcDir}' -> '${rpOutDir}'`);
+
+		copyRecursiveSync(rpSrcDir, rpOutDir);
+
+		console.log(`✅ Done copying resource packs`);
+
+		// Copy scripts
+		const scriptSrcDir = path.resolve(process.cwd(), "dist", "scripts", "main.js");
+		const scriptOutDir = path.join(bpOutDir, "scripts", "main.js");
+
+		console.log(`... Copying scripts: '${scriptSrcDir}' -> '${scriptOutDir}'`);
+
+		fs.mkdirSync(path.dirname(scriptOutDir), { recursive: true });
+		copyRecursiveSync(scriptSrcDir, scriptOutDir);
+
+		console.log(`✅ Done copying scripts`);
+
+		// Setup bundle folders
+		console.log(`... Setting up bundle folders`);
+
+		const bundlesDir = path.resolve(process.cwd(), "dist", "bundles");
+		const contentDir = path.join(bundlesDir, "Content");
+		const marketingDir = path.join(bundlesDir, "Marketing Art");
+		const storeDir = path.join(bundlesDir, "Store Art");
+
+		const contentBp = path.join(contentDir, "behavior_packs");
+		const contentRp = path.join(contentDir, "resource_packs");
+		const contentWt = path.join(contentDir, "world_template");
+
+		fs.mkdirSync(path.join(contentDir), { recursive: true });
+		fs.mkdirSync(path.join(marketingDir), { recursive: true });
+		fs.mkdirSync(path.join(storeDir), { recursive: true });
+
+		const contentSp = path.join(contentDir, "skin_pack");
+		fs.mkdirSync(path.join(contentSp), { recursive: true });
+
+		console.log(`... Copying content`);
+
+		copyRecursiveSync(bpSrcDir, contentBp);
+		copyRecursiveSync(rpSrcDir, contentRp);
+		// Use world_template folder with bp and rp copied already
+		copyRecursiveSync(worldTemplateOutDir, contentWt);
+
+		console.log(`✅ Done copying content`);
+
+		// Bundle
+		console.log(`... Zipping marketplace bundle`);
+
+		const zipOutDir = path.resolve(options.outputFile);
+		fs.mkdirSync(path.dirname(zipOutDir), { recursive: true });
+
+		const zip = new AdmZip();
+		zip.addLocalFolder(bundlesDir);
+		zip.writeZip(zipOutDir);
+
+		console.log(`✅ Created marketplace bundle: ${zipOutDir}`);
+		console.log(`✅ Done`);
 
 		return Promise.resolve();
 	};

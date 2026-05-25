@@ -31,6 +31,8 @@
 		"mcw": "just-scripts mcworld",
 		"mcworld-test": "just-scripts mcworld-test",
 		"mcwt": "just-scripts mcworld-test",
+		"marketplace-bundle": "just-scripts marketplaceBundle",
+		"mpb": "just-scripts marketplaceBundle",
 		"ldp-world": "just-scripts ldp-world",
 		"ldpw": "just-scripts ldp-world",
 		"ldp-world-test": "just-scripts ldp-world-test",
