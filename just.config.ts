@@ -342,8 +342,8 @@ function mpBundleTask(options: ZipTaskParameters) {
 		const marketingDir = path.join(bundlesDir, "Marketing Art");
 		const storeDir = path.join(bundlesDir, "Store Art");
 
-		const contentBp = path.join(contentDir, "behavior_packs");
-		const contentRp = path.join(contentDir, "resource_packs");
+		const contentBp = path.join(contentDir, "behavior_packs", BP_PACK_NAME);
+		const contentRp = path.join(contentDir, "resource_packs", RP_PACK_NAME);
 		const contentWt = path.join(contentDir, "world_template");
 
 		fs.mkdirSync(path.join(contentDir), { recursive: true });
