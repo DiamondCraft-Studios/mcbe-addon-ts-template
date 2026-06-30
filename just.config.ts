@@ -342,8 +342,9 @@ function mpBundleTask(options: ZipTaskParameters) {
 		const marketingDir = path.join(bundlesDir, "Marketing Art");
 		const storeDir = path.join(bundlesDir, "Store Art");
 
-		const contentBp = path.join(contentDir, "behavior_packs", BP_PACK_NAME);
-		const contentRp = path.join(contentDir, "resource_packs", RP_PACK_NAME);
+		const contentBp = path.join(contentDir, "behavior_packs");
+		const contentRp = path.join(contentDir, "resource_packs");
+		const contentSkin = path.join(contentDir, "skin_pack");
 		const contentWt = path.join(contentDir, "world_template");
 
 		fs.mkdirSync(path.join(contentDir), { recursive: true });
@@ -357,8 +358,16 @@ function mpBundleTask(options: ZipTaskParameters) {
 
 		copyRecursiveSync(bpSrcDir, contentBp);
 		copyRecursiveSync(rpSrcDir, contentRp);
+
+		const skinSrcDir = path.resolve(process.cwd(), "skin_pack");
+		copyRecursiveSync(skinSrcDir, contentSkin);
 		// Use world_template folder with bp and rp copied already
 		copyRecursiveSync(worldTemplateOutDir, contentWt);
+
+		const marktArtSrc = path.resolve(process.cwd(), "content", "Marketing Art");
+		const storeArtSrc = path.resolve(process.cwd(), "content", "Store Art");
+		copyRecursiveSync(marktArtSrc, marketingDir);
+		copyRecursiveSync(storeArtSrc, storeDir);
 
 		console.log(`✅ Done copying content`);
 
