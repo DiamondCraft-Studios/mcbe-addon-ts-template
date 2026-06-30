@@ -4,21 +4,21 @@
 		"name": "pack.name",
 		"description": "pack.description",
 		"uuid": "RESOURCE PACK GUID",
-		"version": [1, 0, 0],
-		"min_engine_version": [1, 26, 10]
+		"version": "1.0.0",
+		"min_engine_version": [1, 26, 30]
 	},
 	"modules": [
 		{
 			"description": "Resource pack resources",
 			"type": "resources",
 			"uuid": "UNIQUE GUID",
-			"version": [1, 0, 0]
+			"version": "1.0.0"
 		}
 	],
 	"dependencies": [
 		{
 			"uuid": "BEHAVIOR PACK GUID",
-			"version": [1, 0, 0]
+			"version": "1.0.0"
 		}
 	]
 }
