@@ -17,6 +17,8 @@ import {
 import { argv, parallel, series, task, tscTask } from "just-scripts";
 
 import AdmZip from "adm-zip";
+import { bumpAddOnVersion } from "./.scripts/bump-addon-version";
+import { bumpEngineVersion } from "./.scripts/bump-engine-version";
 import fg from "fast-glob";
 import fs from "fs";
 import { generateBlockIds } from "./.scripts/codegen/blocks";
@@ -176,6 +178,8 @@ task(
 );
 
 task("codegen-ids", codegenIdsTask());
+task("bump-addon-version", bumpAddOnVersionTask());
+task("bump-engine-version", bumpEngineVersionTask());
 task("clean-all", cleanAllTask());
 
 function mcworldTask(options: McworldTaskParameters) {
@@ -435,6 +439,25 @@ function codegenIdsTask() {
 
 			await generator();
 		}
+	};
+}
+
+function bumpAddOnVersionTask() {
+	return async (context: any) => {
+		const args = process.argv;
+		const arg = args[3]?.replace(/^--/, "");
+		bumpAddOnVersion(arg);
+	};
+}
+
+function bumpEngineVersionTask() {
+	return async (context: any) => {
+		const args = process.argv;
+		const arg = args[3]?.replace(/^--/, "");
+		if (!arg) {
+			throw new Error("Min engine version must be specified");
+		}
+		bumpEngineVersion(arg);
 	};
 }
 
